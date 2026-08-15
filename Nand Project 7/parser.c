@@ -1,6 +1,8 @@
 #include "parser.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 static FILE *input_file;
 static char next_line[256];
