@@ -252,12 +252,24 @@ void codewriter_write_push_pop(
   }
 }
 
+static void write_scoped_label(const char *label) {
+  if (current_function[0] != '\0') {
+    fprintf(output_file, "%s$%s", current_function, label);
+  } else {
+    fprintf(output_file, "%s", label);
+  }
+}
+
 void codewriter_write_label(const char *label) {
-  fprintf(output_file, "(%s%s)\n", current_function, label);
+  fprintf(output_file, "(");
+  write_scoped_label(label);
+  fprintf(output_file, ")\n");
 }
 
 void codewriter_write_goto(const char *label) {
-  fprintf(output_file, "@%s$%s\n", current_function, label);
+  fprintf(output_file, "@");
+  write_scoped_label(label);
+  fprintf(output_file, "\n");
   fprintf(output_file, "0;JMP\n");
 }
 
@@ -265,7 +277,9 @@ void codewriter_write_if(const char *label) {
   fprintf(output_file, "@SP\n");
   fprintf(output_file, "AM=M-1\n");
   fprintf(output_file, "D=M\n");
-  fprintf(output_file, "@%s$%s\n", current_function, label);
+  fprintf(output_file, "@");
+  write_scoped_label(label);
+  fprintf(output_file, "\n");
   fprintf(output_file, "D;JNE\n");
 }
 
