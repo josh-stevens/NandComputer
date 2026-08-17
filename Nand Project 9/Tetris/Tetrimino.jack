@@ -1,0 +1,167 @@
+class Tetrimino {
+
+  field int type;
+  field int rotation;
+  field int x;
+  field int y;
+
+  constructor Tetrimino new(int pieceType) {
+    let type = pieceType;
+    let rotation = 0;
+    let x = 3;
+    let y = 0;
+
+    return this;
+  }
+
+  method int getType() {
+    return type;
+  }
+
+  method void moveLeft() {
+    let x = x - 1;
+    return;
+  }
+
+  method void moveRight() {
+    let x = x + 1;
+    return;
+  }
+
+  method void moveDown() {
+    let y = y + 1;
+    return;
+  }
+
+  method void rotate() {
+    let rotation = rotation + 1;
+    if (rotation = 4) {
+      let rotation = 0;
+    }
+    return;
+  }
+
+  method int getBlockX(int index) {
+    // I: XXXX
+    if (type = 0) {
+      if (index = 0) {
+        return x;
+      }
+      if (index = 1) {
+        return x + 1;
+      }
+      if (index = 2) {
+        return x + 2;
+      }
+      if (index = 3) {
+        return x + 3;
+      }
+    }
+
+    // O:
+    // XX
+    // XX
+    if (type = 1) {
+      if ((index = 0) | (index = 2)) {
+        return x;
+      }
+      return x + 1;
+    }
+
+    // T:
+    //  X
+    // XXX
+    if (type = 2) {
+      if (index = 0) {
+        return x + 1;
+      }
+      if (index = 1) {
+        return x;
+      }
+      if (index = 2) {
+        return x + 1;
+      }
+      return x + 2;
+    }
+
+    // S:
+    //  XX
+    // XX
+    if (type = 3) {
+      if ((index = 0) | (index = 3)) {
+        return x + 1;
+      }
+      if (index = 1) {
+        return x + 2;
+      }
+      return x;
+    }
+
+    // Z:
+    // XX
+    //  XX
+    if (type = 4) {
+      if ((index = 0)) {
+        return x;
+      }
+      if ((index = 1) | (index = 2)) {
+        return x + 1;
+      }
+      return x + 2;
+    }
+
+    // J:
+    // X
+    // XXX
+    if (type = 5) {
+      if ((index = 0) | (index = 1)) {
+        return x;
+      }
+      if (index = 2) {
+        return x + 1;
+      }
+      return x + 2;
+    }
+
+    // L:
+    //   X
+    // XXX
+    if (type = 6) {
+      if (index = 0) {
+        return x + 2;
+      }
+      if (index = 1) {
+        return x;
+      }
+      if (index = 2) {
+        return x + 1;
+      }
+      return x + 2;
+    }
+
+    return 0;
+  }
+
+  method int getBlockY(int index) {
+    // I
+    if (type = 0) {
+      return y;
+    }
+
+    // O, S, Z
+    if ((type = 1) | (type = 3) | (type = 4)) {
+      if (index < 2) {
+        return y;
+      }
+      return y + 1;
+    }
+
+    // T, J, L
+    if (index = 0) {
+      return y;
+    }
+
+    return y + 1;
+  }
+
+}

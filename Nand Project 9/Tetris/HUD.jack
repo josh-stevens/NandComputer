@@ -1,0 +1,128 @@
+class HUD {
+  field int score;
+  field int lines;
+  field int nextType;
+  field int level;
+
+  constructor HUD new(int type) {
+    let score = 0;
+    let lines = 0;
+    let nextType = type;
+    let level = 1;
+
+    return this;
+  }
+
+  method void setScore(int value) {
+    let score = value;
+    return;
+  }
+
+  method void setLines(int value) {
+    let lines = value;
+    return;
+  }
+
+  method void setNext(int type) {
+    let nextType = type;
+    return;
+  }
+
+  method void drawBlock(int x, int y) {
+    do Screen.drawRectangle(x, y, x + 11, y + 11);
+    return;
+  }
+
+method void drawPreview() {
+  if (nextType = 0) {
+    // I
+    do drawBlock(405, 185);
+    do drawBlock(417, 185);
+    do drawBlock(429, 185);
+    do drawBlock(441, 185);
+  }
+
+  if (nextType = 1) {
+    // O
+    do drawBlock(417, 180);
+    do drawBlock(429, 180);
+    do drawBlock(417, 192);
+    do drawBlock(429, 192);
+  }
+
+  if (nextType = 2) {
+    // T
+    do drawBlock(429, 180);
+    do drawBlock(417, 192);
+    do drawBlock(429, 192);
+    do drawBlock(441, 192);
+  }
+
+  if (nextType = 3) {
+    // S
+    do drawBlock(423, 180);
+    do drawBlock(435, 180);
+    do drawBlock(411, 192);
+    do drawBlock(423, 192);
+  }
+
+  if (nextType = 4) {
+    // Z
+    do drawBlock(411, 180);
+    do drawBlock(423, 180);
+    do drawBlock(423, 192);
+    do drawBlock(435, 192);
+  }
+
+  if (nextType = 5) {
+    // J
+    do drawBlock(411, 180);
+    do drawBlock(411, 192);
+    do drawBlock(423, 192);
+    do drawBlock(435, 192);
+  }
+
+  if (nextType = 6) {
+    // L
+    do drawBlock(435, 180);
+    do drawBlock(411, 192);
+    do drawBlock(423, 192);
+    do drawBlock(435, 192);
+  }
+
+  return;
+}
+
+  method void draw() {
+    // Top Score
+    do Output.moveCursor(1, 50);
+    do Output.printString("TOP SCORE");
+    do Output.moveCursor(3, 51);
+    do Output.printString("0000000");
+
+    // Score
+    do Output.moveCursor(5, 52);
+    do Output.printString("SCORE");
+    do Output.moveCursor(7, 51);
+    do Output.printString("0000000");
+
+    // Lines
+    do Output.moveCursor(9, 52);
+    do Output.printString("LINES");
+    do Output.moveCursor(11, 53);
+    do Output.printString("000");
+
+    // Next
+    do Output.moveCursor(14, 52);
+    do Output.printString("NEXT");
+    do drawPreview();
+
+    // Level
+    do Output.moveCursor(20, 52);
+    do Output.printString("LEVEL");
+    do Output.moveCursor(22, 53);
+    do Output.printString("001");
+
+    return;
+  }
+}

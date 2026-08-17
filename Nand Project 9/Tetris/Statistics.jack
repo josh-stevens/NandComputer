@@ -1,0 +1,104 @@
+class Statistics {
+
+  field Array counts;
+
+  constructor Statistics new() {
+    var int i;
+
+    let counts = Array.new(7);
+
+    let i = 0;
+    while (i < 7) {
+      let counts[i] = 0;
+      let i = i + 1;
+    }
+
+    return this;
+  }
+
+  method void increment(int type) {
+    let counts[type] = counts[type] + 1;
+    return;
+  }
+
+  method void drawMiniBlock(int x, int y) {
+    do Screen.drawRectangle(x, y, x + 4, y + 4);
+    return;
+  }
+
+  method void printCount(int count) {
+    if (count < 10) {
+      do Output.printChar(48);
+    }
+
+    if (count < 100) {
+      do Output.printChar(48);
+    }
+
+    do Output.printInt(count);
+    return;
+  }
+
+  method void drawCount(int count, int row) {
+    do Output.moveCursor(row, 14);
+    do printCount(count);
+    return;
+  }
+
+  method void draw() {
+    do Output.moveCursor(1, 7);
+    do Output.printString("STATISTICS");
+
+    // I
+    do drawMiniBlock(40, 34);
+    do drawMiniBlock(45, 34);
+    do drawMiniBlock(50, 34);
+    do drawMiniBlock(55, 34);
+    do drawCount(counts[0], 3);
+
+    // O
+    do drawMiniBlock(40, 67);
+    do drawMiniBlock(45, 67);
+    do drawMiniBlock(40, 72);
+    do drawMiniBlock(45, 72);
+    do drawCount(counts[1], 6);
+
+    // T
+    do drawMiniBlock(45, 100);
+    do drawMiniBlock(40, 105);
+    do drawMiniBlock(45, 105);
+    do drawMiniBlock(50, 105);
+    do drawCount(counts[2], 9);
+
+    // S
+    do drawMiniBlock(45, 133);
+    do drawMiniBlock(50, 133);
+    do drawMiniBlock(40, 138);
+    do drawMiniBlock(45, 138);
+    do drawCount(counts[3], 12);
+
+    // Z
+    do drawMiniBlock(40, 166);
+    do drawMiniBlock(45, 166);
+    do drawMiniBlock(45, 171);
+    do drawMiniBlock(50, 171);
+    do drawCount(counts[4], 15);
+
+    // J
+    do drawMiniBlock(40, 199);
+    do drawMiniBlock(40, 204);
+    do drawMiniBlock(45, 204);
+    do drawMiniBlock(50, 204);
+    do drawCount(counts[5], 18);
+
+    // L
+    do drawMiniBlock(50, 232);
+    do drawMiniBlock(40, 237);
+    do drawMiniBlock(45, 237);
+    do drawMiniBlock(50, 237);
+    do drawCount(counts[6], 21);
+
+    return;
+  }
+
+}

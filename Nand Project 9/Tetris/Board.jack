@@ -1,0 +1,162 @@
+class Board {
+  field int left;
+  field int top;
+  field int blockSize;
+  field Tetrimino piece;
+
+  constructor Board new() {
+    let left = 196;
+    let top = 8;
+    let blockSize = 12;
+    return this;
+  }
+
+  method int screenX(int x) {
+    return left + (x * blockSize);
+  }
+
+  method int screenY(int y) {
+    return top + (y * blockSize);
+  }
+
+  method void drawBorder() {
+    do Screen.drawLine(
+      screenX(0) - 1,
+      screenY(0) - 1,
+      screenX(10),
+      screenY(0) - 1
+    );
+
+    do Screen.drawLine(
+      screenX(0) - 1,
+      screenY(20),
+      screenX(10),
+      screenY(20)
+    );
+
+    do Screen.drawLine(
+      screenX(0) - 1,
+      screenY(0) - 1,
+      screenX(0) - 1,
+      screenY(20)
+    );
+
+    do Screen.drawLine(
+      screenX(10),
+      screenY(0) - 1,
+      screenX(10),
+      screenY(20)
+    );
+
+    return;
+  }
+
+  method void setPiece(Tetrimino p) {
+    let piece = p;
+    return;
+  }
+
+  method void drawBlock(int x, int y) {
+    do Screen.drawRectangle(
+      screenX(x),
+      screenY(y),
+      screenX(x) + 11,
+      screenY(y) + 11
+    );
+    return;
+  }
+
+  method void drawPiece() {
+    var int i;
+    var int x;
+    var int y;
+
+    let i = 0;
+
+    while (i < 4) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      do drawBlock(x, y);
+
+      let i = i + 1;
+    }
+
+    return;
+  }
+
+  method void erasePiece() {
+    var int i;
+    var int x;
+    var int y;
+
+    do Screen.setColor(false);
+
+    let i = 0;
+
+    while (i < 4) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      do drawBlock(x, y);
+
+      let i = i + 1;
+    }
+
+    do Screen.setColor(true);
+    return;
+  }
+
+  method void draw() {
+    do drawPiece();
+    return;
+  }
+
+  method boolean canMoveLeft() {
+    var int i;
+
+    let i = 0;
+
+    while (i < 4) {
+      if (piece.getBlockX(i) = 0) {
+        return false;
+      }
+
+      let i = i + 1;
+    }
+
+    return true;
+  }
+
+  method boolean canMoveRight() {
+    var int i;
+
+    let i = 0;
+
+    while (i < 4) {
+      if (piece.getBlockX(i) = 9) {
+        return false;
+      }
+
+      let i = i + 1;
+    }
+
+    return true;
+  }
+
+  method boolean canMoveDown() {
+    var int i;
+
+    let i = 0;
+
+    while (i < 4) {
+      if (piece.getBlockY(i) = 19) {
+        return false;
+      }
+
+      let i = i + 1;
+    }
+
+    return true;
+  }
+}

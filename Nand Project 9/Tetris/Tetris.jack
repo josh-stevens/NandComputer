@@ -1,0 +1,191 @@
+class Tetris {
+  field Board board;
+  field Statistics statistics;
+  field Tetrimino currentPiece;
+  field Tetrimino nextPiece;
+  field HUD hud;
+  field int leftKey;
+  field int rightKey;
+  field int downKey;
+  field int initialKeyDelay;
+  field int repeatKeyDelay;
+  field int leftCounter;
+  field int rightCounter;
+  field boolean leftHeld;
+  field boolean rightHeld;
+  field boolean downHeld;
+  field boolean leftRepeating;
+  field boolean rightRepeating;
+  field int gravityDelay;
+  field int gravityCounter;
+  field int softDropDelay;
+
+  constructor Tetris new() {
+    let board = Board.new();
+    let statistics = Statistics.new();
+
+    let currentPiece = Tetrimino.new(5);
+    let nextPiece = Tetrimino.new(1);
+
+    do board.setPiece(currentPiece);
+
+    let hud = HUD.new(nextPiece.getType());
+
+    let leftKey = 130;
+    let rightKey = 132;
+    let downKey = 133;
+    let leftCounter = 0;
+    let rightCounter = 0;
+    let gravityCounter = 0;
+    let leftHeld = false;
+    let rightHeld = false;
+    let downHeld = false;
+    let initialKeyDelay = 15;
+    let repeatKeyDelay = 5;
+    let gravityDelay = 100;
+    let softDropDelay = 5;
+    return this;
+  }
+
+  method void moveLeft() {
+    if (board.canMoveLeft()) {
+      do board.erasePiece();
+      do currentPiece.moveLeft();
+      do board.draw();
+    }
+    return;
+  }
+
+  method void moveRight() {
+    if (board.canMoveRight()) {
+      do board.erasePiece();
+      do currentPiece.moveRight();
+      do board.draw();
+    }
+    return;
+  }
+
+  method void moveDown() {
+    if (board.canMoveDown()) {
+      do board.erasePiece();
+      do currentPiece.moveDown();
+      do board.draw();
+    }
+    return;
+  }
+
+  method void gravityTick() {
+    if (board.canMoveDown()) {
+      do board.erasePiece();
+      do currentPiece.moveDown();
+      do board.draw();
+    }
+    let gravityCounter = 0;
+    return;
+  }
+
+  method void handleInput(int key) {
+    if (key = leftKey) {
+      if (~leftHeld) {
+        do moveLeft();
+        let leftHeld = true;
+        let leftRepeating = false;
+        let leftCounter = 0;
+      } else {
+        let leftCounter = leftCounter + 1;
+
+        if (~leftRepeating) {
+          if (leftCounter = initialKeyDelay) {
+            do moveLeft();
+            let leftCounter = 0;
+            let leftRepeating = true;
+          }
+        } else {
+          if (leftCounter = repeatKeyDelay) {
+            do moveLeft();
+            let leftCounter = 0;
+          }
+        }
+      }
+    } else {
+      let leftHeld = false;
+      let leftRepeating = false;
+      let leftCounter = 0;
+    }
+
+    if (key = rightKey) {
+      if (~rightHeld) {
+        do moveRight();
+        let rightHeld = true;
+        let rightRepeating = false;
+        let rightCounter = 0;
+      } else {
+        let rightCounter = rightCounter + 1;
+
+        if (~rightRepeating) {
+          if (rightCounter = initialKeyDelay) {
+            do moveRight();
+            let rightCounter = 0;
+            let rightRepeating = true;
+          }
+        } else {
+          if (rightCounter = repeatKeyDelay) {
+            do moveRight();
+            let rightCounter = 0;
+          }
+        }
+      }
+    } else {
+      let rightHeld = false;
+      let rightRepeating = false;
+      let rightCounter = 0;
+    }
+
+    if (key = downKey) {
+      let downHeld = true;
+    } else {
+      let downHeld = false;
+    }
+
+    return;
+  }
+
+  method void handleGravity() {
+    let gravityCounter = gravityCounter + 1;
+
+    if (downHeld) {
+      if (~(gravityCounter < softDropDelay)) {
+        do gravityTick();
+      }
+    } else {
+      if (~(gravityCounter < gravityDelay)) {
+        do gravityTick();
+      }
+    }
+
+    return;
+  }
+
+  method void run() {
+    var int key;
+
+    do Screen.clearScreen();
+    do Screen.setColor(true);
+
+    do board.drawBorder();
+    do statistics.draw();
+    do hud.draw();
+    do board.draw();
+
+    while (true) {
+      let key = Keyboard.keyPressed();
+
+      do handleInput(key);
+      do handleGravity();
+
+      do Sys.wait(10);
+    }
+
+    return;
+  }
+}
