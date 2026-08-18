@@ -199,6 +199,50 @@ class Board {
     return true;
   }
 
+  method boolean canRotate() {
+    var int i;
+    var int x;
+    var int y;
+    var int nextRotation;
+
+    let i = 0;
+
+    while (i < 4) {
+      let nextRotation = piece.getRotation() + 1;
+
+      if (nextRotation = 4) {
+        let nextRotation = 0;
+      }
+      let x = piece.getBlockXForRotation(i, nextRotation);
+      let y = piece.getBlockYForRotation(i, nextRotation);
+
+      // left/right walls
+      if (x < 0) {
+        return false;
+      }
+
+      if (x > 9) {
+        return false;
+      }
+
+      // Floor
+      if (y > 19) {
+        return false;
+      }
+
+      // Locked cell
+      if (~(y < 0)) {
+        if (cells[(y * 10) + x] = 1) {
+          return false;
+        }
+      }
+
+      let i = i + 1;
+    }
+
+    return true;
+  }
+
   method int lockPiece() {
     var int i;
     var int x;

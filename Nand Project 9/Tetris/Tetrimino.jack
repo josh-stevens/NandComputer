@@ -18,6 +18,10 @@ class Tetrimino {
     return type;
   }
 
+  method int getRotation() {
+    return rotation;
+  }
+
   method void moveLeft() {
     let x = x - 1;
     return;
@@ -41,26 +45,16 @@ class Tetrimino {
     return;
   }
 
-  method int getBlockX(int index) {
-    // I: XXXX
+  method int getBlockXForRotation(int index, int r) {
+    // I
     if (type = 0) {
-      if (index = 0) {
-        return x;
+      if ((r = 0) | (r = 2)) {
+        return x + index;
       }
-      if (index = 1) {
-        return x + 1;
-      }
-      if (index = 2) {
-        return x + 2;
-      }
-      if (index = 3) {
-        return x + 3;
-      }
+      return x + 1;
     }
 
-    // O:
-    // XX
-    // XX
+    // O
     if (type = 1) {
       if ((index = 0) | (index = 2)) {
         return x;
@@ -68,100 +62,351 @@ class Tetrimino {
       return x + 1;
     }
 
-    // T:
-    //  X
-    // XXX
+    // T
     if (type = 2) {
-      if (index = 0) {
+      if (r = 0) {
+        if (index = 0) {
+          return x + 1;
+        }
+        if (index = 1) {
+          return x;
+        }
+        if (index = 2) {
+          return x + 1;
+        }
+        if (index = 3) {
+          return x + 2;
+        }
+      }
+      if (r = 1) {
+        if ((index = 0) | (index = 1)) {
+          return x + 1;
+        }
+        if (index = 2) {
+          return x + 2;
+        }
         return x + 1;
       }
-      if (index = 1) {
-        return x;
-      }
-      if (index = 2) {
+      if (r = 2) {
+        if (index = 0) {
+          return x;
+        }
+        if (index = 1) {
+          return x + 1;
+        }
+        if (index = 2) {
+          return x + 2;
+        }
         return x + 1;
       }
-      return x + 2;
-    }
-
-    // S:
-    //  XX
-    // XX
-    if (type = 3) {
+      // r = 3
       if ((index = 0) | (index = 3)) {
         return x + 1;
       }
       if (index = 1) {
+        return x;
+      }
+      return x + 1;
+    }
+
+    // S
+    if (type = 3) {
+      if ((r = 0) | (r = 2)) {
+        if ((index = 0) | (index = 3)) {
+          return x + 1;
+        }
+        if (index = 1) {
+          return x + 2;
+        }
+        return x;
+      }
+
+      // Vertical
+      if ((index = 0) | (index = 1)) {
+        return x;
+      }
+      if ((index = 2) | (index = 3)) {
+        return x + 1;
+      }
+    }
+
+    // Z
+    if (type = 4) {
+      if ((r = 0) | (r = 2)) {
+        if (index = 0) {
+          return x;
+        }
+        if ((index = 1) | (index = 2)) {
+          return x + 1;
+        }
         return x + 2;
+      }
+
+      // Vertical
+      if ((index = 0) | (index = 1)) {
+        return x + 1;
       }
       return x;
     }
 
-    // Z:
-    // XX
-    //  XX
-    if (type = 4) {
-      if ((index = 0)) {
-        return x;
-      }
-      if ((index = 1) | (index = 2)) {
-        return x + 1;
-      }
-      return x + 2;
-    }
-
-    // J:
-    // X
-    // XXX
+    // J
     if (type = 5) {
-      if ((index = 0) | (index = 1)) {
-        return x;
-      }
-      if (index = 2) {
-        return x + 1;
-      }
-      return x + 2;
-    }
-
-    // L:
-    //   X
-    // XXX
-    if (type = 6) {
-      if (index = 0) {
+      if (r = 0) {
+        if ((index = 0) | (index = 1)) {
+          return x;
+        }
+        if (index = 2) {
+          return x + 1;
+        }
         return x + 2;
       }
-      if (index = 1) {
-        return x;
-      }
-      if (index = 2) {
+
+      if (r = 1) {
+        if ((index = 0) | (index = 2) | (index = 3)) {
+          return x;
+        }
         return x + 1;
       }
-      return x + 2;
+
+      if (r = 2) {
+        if (index = 0) {
+          return x;
+        }
+        if (index = 1) {
+          return x + 1;
+        }
+        return x + 2;
+      }
+
+      // r = 3
+      if ((index = 0) | (index = 1) | (index = 3)) {
+        return x + 1;
+      }
+      return x;
     }
 
-    return 0;
+    // L
+    if (type = 6) {
+      if (r = 0) {
+        if (index = 0) {
+          return x + 2;
+        }
+        if (index = 1) {
+          return x;
+        }
+        if (index = 2) {
+          return x + 1;
+        }
+        return x + 2;
+      }
+
+      if (r = 1) {
+        if (index = 0) {
+          return x;
+        }
+        if ((index = 1) | (index = 2)) {
+          return x;
+        }
+        return x + 1;
+      }
+
+      if (r = 2) {
+        if (index = 0) {
+          return x + 2;
+        }
+        if (index = 1) {
+          return x;
+        }
+        if (index = 2) {
+          return x + 1;
+        }
+        return x;
+      }
+
+      // r = 3
+      if (index = 0) {
+        return x;
+      }
+      return x + 1;
+    }
+    return x;
   }
 
-  method int getBlockY(int index) {
+  method int getBlockX(int index) {
+    return getBlockXForRotation(index, rotation);
+  }
+
+  method int getBlockYForRotation(int index, int r) {
     // I
     if (type = 0) {
-      return y;
+      if ((r = 0) | (r = 2)) {
+        return y;
+      }
+      return y + index;
     }
 
-    // O, S, Z
-    if ((type = 1) | (type = 3) | (type = 4)) {
-      if (index < 2) {
+    // O
+    if (type = 1) {
+      if ((index = 0) | (index = 1)) {
         return y;
       }
       return y + 1;
     }
 
-    // T, J, L
-    if (index = 0) {
-      return y;
+    // T
+    if (type = 2) {
+      if (r = 0) {
+        if (index = 0) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      if (r = 1) {
+        if (index = 0) {
+          return y;
+        }
+        if ((index = 1) | (index = 2)) {
+          return y + 1;
+        }
+        return y + 2;
+      }
+
+      if (r = 2) {
+        if ((index = 0) | (index = 1) | (index = 2)) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      // r = 3
+      if (index = 0) {
+        return y;
+      }
+      if ((index = 1) | (index = 2)) {
+        return y + 1;
+      }
+      return y + 2;
     }
 
-    return y + 1;
+      // S
+    if (type = 3) {
+      if ((r = 0) | (r = 2)) {
+        if ((index = 0) | (index = 1)) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      if (index = 0) {
+        return y;
+      }
+      if ((index = 1) | (index = 2)) {
+        return y + 1;
+      }
+      return y + 2;
+    }
+
+
+    // Z
+    if (type = 4) {
+      if ((r = 0) | (r = 2)) {
+        if ((index = 0) | (index = 1)) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      if (index = 0) {
+        return y;
+      }
+      if ((index = 1) | (index = 2)) {
+        return y + 1;
+      }
+      return y + 2;
+    }
+
+    // J
+    if (type = 5) {
+      if (r = 0) {
+        if (index = 0) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      if (r = 1) {
+        if ((index = 0) | (index = 1)) {
+          return y;
+        }
+        if (index = 2) {
+          return y + 1;
+        }
+        return y + 2;
+      }
+
+      if (r = 2) {
+        if ((index = 0) | (index = 1) | (index = 2)) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      // r = 3
+      if (index = 0) {
+        return y;
+      }
+      if (index = 1) {
+        return y + 1;
+      }
+      return y + 2;
+    }
+
+
+    // L
+    if (type = 6) {
+      if (r = 0) {
+        if (index = 0) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      if (r = 1) {
+        if (index = 0) {
+          return y + 2;
+        }
+        if (index = 1) {
+          return y;
+        }
+        if (index = 2) {
+          return y + 1;
+        }
+        return y + 2;
+      }
+
+      if (r = 2) {
+        if ((index = 0) | (index = 1) | (index = 2)) {
+          return y;
+        }
+        return y + 1;
+      }
+
+      // r = 3
+      if ((index = 0) | (index = 1)) {
+        return y;
+      }
+      if (index = 2) {
+        return y + 1;
+      }
+      return y + 2;
+    }
+
+    return y;
+  }
+
+  method int getBlockY(int index) {
+    return getBlockYForRotation(index, rotation);
   }
 
   method void dispose() {
