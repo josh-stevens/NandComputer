@@ -3,11 +3,19 @@ class Board {
   field int top;
   field int blockSize;
   field Tetrimino piece;
+  field Array cells;
 
   constructor Board new() {
+    var int i;
     let left = 196;
     let top = 8;
     let blockSize = 12;
+    let cells = Array.new(200);
+    let i = 0;
+    while (i < 200) {
+      let cells[i] = 0;
+      let i = i + 1;
+    }
     return this;
   }
 
@@ -108,17 +116,29 @@ class Board {
   }
 
   method void draw() {
+    do drawLockedCells();
     do drawPiece();
     return;
   }
 
   method boolean canMoveLeft() {
     var int i;
+    var int x;
+    var int y;
 
     let i = 0;
 
     while (i < 4) {
-      if (piece.getBlockX(i) = 0) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      // left border
+      if (x = 0) {
+        return false;
+      }
+
+      // locked cell
+      if (cells[(y * 10) + (x - 1)] = 1) {
         return false;
       }
 
@@ -130,11 +150,22 @@ class Board {
 
   method boolean canMoveRight() {
     var int i;
+    var int x;
+    var int y;
 
     let i = 0;
 
     while (i < 4) {
-      if (piece.getBlockX(i) = 9) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      // right border
+      if (x = 9) {
+        return false;
+      }
+
+      // locked cell
+      if (cells[(y * 10) + (x + 1)] = 1) {
         return false;
       }
 
@@ -146,11 +177,19 @@ class Board {
 
   method boolean canMoveDown() {
     var int i;
+    var int x;
+    var int y;
 
     let i = 0;
 
     while (i < 4) {
-      if (piece.getBlockY(i) = 19) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+      if (y = 19) {
+        return false;
+      }
+
+      if (cells[((y + 1) * 10) + x] = 1) {
         return false;
       }
 
@@ -158,5 +197,89 @@ class Board {
     }
 
     return true;
+  }
+
+  method int lockPiece() {
+    var int i;
+    var int x;
+    var int y;
+    var int linesCleared;
+
+    let i = 0;
+
+    while (i < 4) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      let cells[(y * 10) + x] = 1;
+
+      let i = i + 1;
+    }
+
+    let linesCleared = 0;
+    // let y = 0;
+
+    // while (y < 20) {
+    //   if (isRowFull(y)) {
+    //     let linesCleared = linesCleared + 1;
+    //     do clearRow(y);
+    //   }
+
+    //   let y = y + 1;
+    // }
+
+    return linesCleared;
+  }
+
+  method boolean isRowFull(int y) {
+    var int x;
+
+    let x = 0;
+
+    while (x < 10) {
+      if (cells[(y * 10) + x] = 0) {
+        return false;
+      }
+
+      let x = x + 1;
+    }
+
+    return true;
+  }
+
+  method void clearRow(int y) {
+    var int x;
+
+    let x = 0;
+
+    while (x < 10) {
+      let cells[(y * 10) + x] = 0;
+      let x = x + 1;
+    }
+
+    return;
+  }
+
+  method void drawLockedCells() {
+    var int x;
+    var int y;
+
+    let y = 0;
+
+    while (y < 20) {
+      let x = 0;
+
+      while (x < 10) {
+        if (cells[(y * 10) + x] = 1) {
+          do drawBlock(x, y);
+        }
+
+        let x = x + 1;
+      }
+
+      let y = y + 1;
+    }
+
+    return;
   }
 }

@@ -164,4 +164,9 @@ class Tetrimino {
     return y + 1;
   }
 
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
 }

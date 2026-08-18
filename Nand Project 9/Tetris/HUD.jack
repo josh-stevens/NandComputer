@@ -24,7 +24,9 @@ class HUD {
   }
 
   method void setNext(int type) {
+    do erasePreview();
     let nextType = type;
+    do drawPreview();
     return;
   }
 
@@ -33,65 +35,72 @@ class HUD {
     return;
   }
 
-method void drawPreview() {
-  if (nextType = 0) {
-    // I
-    do drawBlock(405, 185);
-    do drawBlock(417, 185);
-    do drawBlock(429, 185);
-    do drawBlock(441, 185);
+  method void drawPreview() {
+    if (nextType = 0) {
+      // I
+      do drawBlock(405, 185);
+      do drawBlock(417, 185);
+      do drawBlock(429, 185);
+      do drawBlock(441, 185);
+    }
+
+    if (nextType = 1) {
+      // O
+      do drawBlock(417, 180);
+      do drawBlock(429, 180);
+      do drawBlock(417, 192);
+      do drawBlock(429, 192);
+    }
+
+    if (nextType = 2) {
+      // T
+      do drawBlock(429, 180);
+      do drawBlock(417, 192);
+      do drawBlock(429, 192);
+      do drawBlock(441, 192);
+    }
+
+    if (nextType = 3) {
+      // S
+      do drawBlock(423, 180);
+      do drawBlock(435, 180);
+      do drawBlock(411, 192);
+      do drawBlock(423, 192);
+    }
+
+    if (nextType = 4) {
+      // Z
+      do drawBlock(411, 180);
+      do drawBlock(423, 180);
+      do drawBlock(423, 192);
+      do drawBlock(435, 192);
+    }
+
+    if (nextType = 5) {
+      // J
+      do drawBlock(411, 180);
+      do drawBlock(411, 192);
+      do drawBlock(423, 192);
+      do drawBlock(435, 192);
+    }
+
+    if (nextType = 6) {
+      // L
+      do drawBlock(435, 180);
+      do drawBlock(411, 192);
+      do drawBlock(423, 192);
+      do drawBlock(435, 192);
+    }
+
+    return;
   }
 
-  if (nextType = 1) {
-    // O
-    do drawBlock(417, 180);
-    do drawBlock(429, 180);
-    do drawBlock(417, 192);
-    do drawBlock(429, 192);
+  method void erasePreview() {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(405, 175, 452, 210);
+    do Screen.setColor(true);
+    return;
   }
-
-  if (nextType = 2) {
-    // T
-    do drawBlock(429, 180);
-    do drawBlock(417, 192);
-    do drawBlock(429, 192);
-    do drawBlock(441, 192);
-  }
-
-  if (nextType = 3) {
-    // S
-    do drawBlock(423, 180);
-    do drawBlock(435, 180);
-    do drawBlock(411, 192);
-    do drawBlock(423, 192);
-  }
-
-  if (nextType = 4) {
-    // Z
-    do drawBlock(411, 180);
-    do drawBlock(423, 180);
-    do drawBlock(423, 192);
-    do drawBlock(435, 192);
-  }
-
-  if (nextType = 5) {
-    // J
-    do drawBlock(411, 180);
-    do drawBlock(411, 192);
-    do drawBlock(423, 192);
-    do drawBlock(435, 192);
-  }
-
-  if (nextType = 6) {
-    // L
-    do drawBlock(435, 180);
-    do drawBlock(411, 192);
-    do drawBlock(423, 192);
-    do drawBlock(435, 192);
-  }
-
-  return;
-}
 
   method void draw() {
     // Top Score

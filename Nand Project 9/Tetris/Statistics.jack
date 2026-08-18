@@ -18,6 +18,7 @@ class Statistics {
 
   method void increment(int type) {
     let counts[type] = counts[type] + 1;
+    do drawCountForType(type);
     return;
   }
 
@@ -42,6 +43,38 @@ class Statistics {
   method void drawCount(int count, int row) {
     do Output.moveCursor(row, 14);
     do printCount(count);
+    return;
+  }
+
+  method void drawCountForType(int type) {
+    if (type = 0) {
+      do drawCount(counts[0], 3);
+    }
+
+    if (type = 1) {
+      do drawCount(counts[1], 6);
+    }
+
+    if (type = 2) {
+      do drawCount(counts[2], 9);
+    }
+
+    if (type = 3) {
+      do drawCount(counts[3], 12);
+    }
+
+    if (type = 4) {
+      do drawCount(counts[4], 15);
+    }
+
+    if (type = 5) {
+      do drawCount(counts[5], 18);
+    }
+
+    if (type = 6) {
+      do drawCount(counts[6], 21);
+    }
+
     return;
   }
 

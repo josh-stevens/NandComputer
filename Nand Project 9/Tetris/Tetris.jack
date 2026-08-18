@@ -19,15 +19,17 @@ class Tetris {
   field int gravityDelay;
   field int gravityCounter;
   field int softDropDelay;
+  field int randomCounter;
 
   constructor Tetris new() {
     let board = Board.new();
     let statistics = Statistics.new();
 
-    let currentPiece = Tetrimino.new(5);
+    let currentPiece = Tetrimino.new(generatePieceType());
     let nextPiece = Tetrimino.new(1);
 
     do board.setPiece(currentPiece);
+    do statistics.increment(currentPiece.getType());
 
     let hud = HUD.new(nextPiece.getType());
 
@@ -44,6 +46,7 @@ class Tetris {
     let repeatKeyDelay = 5;
     let gravityDelay = 100;
     let softDropDelay = 5;
+    let randomCounter = 0;
     return this;
   }
 
@@ -66,20 +69,27 @@ class Tetris {
   }
 
   method void moveDown() {
-    if (board.canMoveDown()) {
-      do board.erasePiece();
-      do currentPiece.moveDown();
-      do board.draw();
-    }
+    do board.erasePiece();
+    do currentPiece.moveDown();
+    do board.draw();
     return;
   }
 
   method void gravityTick() {
     if (board.canMoveDown()) {
-      do board.erasePiece();
-      do currentPiece.moveDown();
-      do board.draw();
+      do moveDown();
+    } else {
+      do board.lockPiece();
+      do currentPiece.dispose();
+
+      let currentPiece = nextPiece;
+      let nextPiece = Tetrimino.new(generatePieceType());
+
+      do board.setPiece(currentPiece);
+      do hud.setNext(nextPiece.getType());
+      do statistics.increment(currentPiece.getType());
     }
+
     let gravityCounter = 0;
     return;
   }
@@ -183,9 +193,15 @@ class Tetris {
       do handleInput(key);
       do handleGravity();
 
+      let randomCounter = randomCounter + 1;
+
       do Sys.wait(10);
     }
 
     return;
+  }
+
+  method int generatePieceType() {
+    return randomCounter - (Math.divide(randomCounter, 7) * 7);
   }
 }
