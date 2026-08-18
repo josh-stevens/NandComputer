@@ -91,10 +91,30 @@ class Tetris {
   }
 
   method void gravityTick() {
+    var int linesCleared;
+    var int score;
+
     if (board.canMoveDown()) {
       do moveDown();
     } else {
-      do board.lockPiece();
+      let linesCleared = board.lockPiece();
+      if (linesCleared > 0) {
+        if (linesCleared = 1) {
+          let score = 100;
+        }
+        if (linesCleared = 2) {
+          let score = 300;
+        }
+        if (linesCleared = 3) {
+          let score = 500;
+        }
+        if (linesCleared = 4) {
+          let score = 800;
+        }
+        do hud.addScore(score);
+        do hud.addLines(linesCleared);
+        do updateGravity();
+      }
       do currentPiece.dispose();
 
       let currentPiece = nextPiece;
@@ -106,6 +126,14 @@ class Tetris {
     }
 
     let gravityCounter = 0;
+    return;
+  }
+
+  method void updateGravity() {
+    let gravityDelay = 100 - ((hud.getLevel() - 1) * 12);
+    if (gravityDelay < 4) {
+      let gravityDelay = 4;
+    }
     return;
   }
 

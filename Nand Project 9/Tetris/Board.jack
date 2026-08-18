@@ -261,16 +261,16 @@ class Board {
     }
 
     let linesCleared = 0;
-    // let y = 0;
+    let y = 0;
 
-    // while (y < 20) {
-    //   if (isRowFull(y)) {
-    //     let linesCleared = linesCleared + 1;
-    //     do clearRow(y);
-    //   }
+    while (y < 20) {
+      if (isRowFull(y)) {
+        let linesCleared = linesCleared + 1;
+        do clearRow(y);
+      }
 
-    //   let y = y + 1;
-    // }
+      let y = y + 1;
+    }
 
     return linesCleared;
   }
@@ -291,13 +291,47 @@ class Board {
     return true;
   }
 
-  method void clearRow(int y) {
+  method boolean isRowEmpty(int y) {
     var int x;
 
     let x = 0;
 
     while (x < 10) {
-      let cells[(y * 10) + x] = 0;
+      if (cells[(y * 10) + x] = 1) {
+        return false;
+      }
+
+      let x = x + 1;
+    }
+
+    return true;
+  }
+
+  method void clearRow(int y) {
+    var int previousRow;
+    var int currentRow;
+    var int x;
+    let previousRow = y - 1;
+    let currentRow = y;
+
+    while ((previousRow > 0) | (previousRow = 0)) {
+      let x = 0;
+      while (x < 10) {
+        let cells[(currentRow * 10) + x] =
+          cells[(previousRow * 10) + x];
+
+        let x = x + 1;
+      }
+
+      let previousRow = previousRow - 1;
+      let currentRow = currentRow - 1;
+    }
+
+    // clear topmost row
+    let x = 0;
+
+    while (x < 10) {
+      let cells[x] = 0;
       let x = x + 1;
     }
 
@@ -316,6 +350,10 @@ class Board {
       while (x < 10) {
         if (cells[(y * 10) + x] = 1) {
           do drawBlock(x, y);
+        } else {
+          do Screen.setColor(false);
+          do drawBlock(x, y);
+          do Screen.setColor(true);
         }
 
         let x = x + 1;

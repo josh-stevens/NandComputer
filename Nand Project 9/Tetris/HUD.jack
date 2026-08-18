@@ -13,14 +13,91 @@ class HUD {
     return this;
   }
 
-  method void setScore(int value) {
-    let score = value;
+  method void addScore(int points) {
+    let score = score + (points * level);
+    do drawScore();
     return;
   }
 
-  method void setLines(int value) {
-    let lines = value;
+  method void drawScore() {
+    var int digits;
+
+    let digits = 1;
+
+    if (score > 99) {
+      let digits = 3;
+    }
+
+    if (score > 999) {
+      let digits = 4;
+    }
+
+    if (score > 9999) {
+      let digits = 5;
+    }
+
+    do Output.moveCursor(7, 58 - digits);
+    do Output.printInt(score);
+
     return;
+  }
+
+  method void addLines(int count) {
+    var int oldLevel;
+
+    let lines = lines + count;
+    let oldLevel = level;
+
+    let level = 1 + (lines / 10);
+
+    do drawLines();
+
+    if (~(level = oldLevel)) {
+      do drawLevel();
+    }
+
+    return;
+  }
+
+  method void drawLines() {
+    var int digits;
+
+    let digits = 1;
+
+    if (lines > 9) {
+      let digits = 2;
+    }
+
+    if (lines > 99) {
+      let digits = 3;
+    }
+
+    do Output.moveCursor(11, 56 - digits);
+    do Output.printInt(lines);
+
+    return;
+  }
+
+  method void drawLevel() {
+    var int digits;
+
+    let digits = 1;
+
+    if (level > 9) {
+      let digits = 2;
+    }
+
+    if (level > 99) {
+      let digits = 3;
+    }
+
+    do Output.moveCursor(22, 56 - digits);
+    do Output.printInt(level);
+    return;
+  }
+
+  method int getLevel() {
+    return level;
   }
 
   method void setNext(int type) {
