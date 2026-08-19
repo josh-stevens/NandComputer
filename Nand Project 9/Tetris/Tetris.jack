@@ -8,6 +8,7 @@ class Tetris {
   field int rightKey;
   field int downKey;
   field int upKey;
+  field int spaceKey;
   field int initialKeyDelay;
   field int repeatKeyDelay;
   field int leftCounter;
@@ -22,6 +23,7 @@ class Tetris {
   field int gravityCounter;
   field int softDropDelay;
   field int randomCounter;
+  field boolean gameOver;
 
   constructor Tetris new() {
     let board = Board.new();
@@ -39,6 +41,7 @@ class Tetris {
     let rightKey = 132;
     let downKey = 133;
     let upKey = 131;
+    let spaceKey = 32;
     let leftCounter = 0;
     let rightCounter = 0;
     let gravityCounter = 0;
@@ -119,8 +122,17 @@ class Tetris {
 
       let currentPiece = nextPiece;
       let nextPiece = Tetrimino.new(generatePieceType());
-
       do board.setPiece(currentPiece);
+
+      if (~(board.canPlacePiece())) {
+        let gameOver = true;
+        do hud.drawGameOver();
+        if (hud.getScore() > hud.getTopScore()) {
+          do hud.updateTopScore();
+        }
+        return;
+      }
+
       do hud.setNext(nextPiece.getType());
       do statistics.increment(currentPiece.getType());
     }
@@ -131,8 +143,8 @@ class Tetris {
 
   method void updateGravity() {
     let gravityDelay = 100 - ((hud.getLevel() - 1) * 12);
-    if (gravityDelay < 4) {
-      let gravityDelay = 4;
+    if (gravityDelay < 0) {
+      let gravityDelay = 0;
     }
     return;
   }
@@ -228,6 +240,38 @@ class Tetris {
     return;
   }
 
+  method void handleGameOver(int key) {
+    if (key = spaceKey) {
+      do reset();
+    }
+    return;
+  }
+
+  method void reset() {
+    do currentPiece.dispose();
+    do nextPiece.dispose();
+
+    let currentPiece = Tetrimino.new(generatePieceType());
+    let nextPiece = Tetrimino.new(generatePieceType());
+
+    do board.reset();
+    do board.setPiece(currentPiece);
+    do hud.reset();
+    do hud.setNext(nextPiece.getType());
+    let gravityCounter = 100;
+    do statistics.reset();
+    do statistics.increment(currentPiece.getType());
+
+    do Screen.clearScreen();
+    do Screen.setColor(true);
+    do board.drawBorder();
+    do statistics.draw();
+    do hud.draw();
+    do board.draw();
+    let gameOver = false;
+    return;
+  }
+
   method void run() {
     var int key;
 
@@ -242,10 +286,15 @@ class Tetris {
     while (true) {
       let key = Keyboard.keyPressed();
 
-      do handleInput(key);
-      do handleGravity();
+      if (gameOver) {
+        do handleGameOver(key);
+      } else {
+        do handleInput(key);
+        do handleGravity();
+  
+        let randomCounter = randomCounter + 1;
+      }
 
-      let randomCounter = randomCounter + 1;
 
       do Sys.wait(10);
     }

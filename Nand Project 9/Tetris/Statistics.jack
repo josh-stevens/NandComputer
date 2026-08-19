@@ -134,4 +134,14 @@ class Statistics {
     return;
   }
 
+  method void reset() {
+    var int i;
+    let i = 0;
+    while (i < 7) {
+      let counts[i] = 0;
+      let i = i + 1;
+    }
+    return;
+  }
+
 }

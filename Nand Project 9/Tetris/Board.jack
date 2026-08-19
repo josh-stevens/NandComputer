@@ -243,6 +243,31 @@ class Board {
     return true;
   }
 
+  method boolean canPlacePiece() {
+    var int i;
+    var int x;
+    var int y;
+
+    let i = 0;
+
+    while (i < 4) {
+      let x = piece.getBlockX(i);
+      let y = piece.getBlockY(i);
+
+      if (y < 0) {
+        return false;
+      }
+
+      if (isOccupied(x, y)) {
+        return false;
+      }
+
+      let i = i + 1;
+    }
+
+    return true;
+  }
+
   method int lockPiece() {
     var int i;
     var int x;
@@ -362,6 +387,37 @@ class Board {
       let y = y + 1;
     }
 
+    return;
+  }
+
+  method boolean isOccupied(int x, int y) {
+    if (x < 0) {
+      return true;
+    }
+
+    if (x > 9) {
+      return true;
+    }
+
+    if (y > 19) {
+      return true;
+    }
+
+    if (y < 0) {
+      return true;
+    }
+
+    return cells[(y * 10) + x] = 1;
+  }
+
+  method void reset() {
+    var int i;
+
+    let i = 0;
+    while (i < 200) {
+      let cells[i] = 0;
+      let i = i + 1;
+    }
     return;
   }
 }

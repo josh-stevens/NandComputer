@@ -1,5 +1,6 @@
 class HUD {
   field int score;
+  field int topScore;
   field int lines;
   field int nextType;
   field int level;
@@ -9,6 +10,7 @@ class HUD {
     let lines = 0;
     let nextType = type;
     let level = 1;
+    let topScore = 0;
 
     return this;
   }
@@ -38,6 +40,29 @@ class HUD {
 
     do Output.moveCursor(7, 58 - digits);
     do Output.printInt(score);
+
+    return;
+  }
+
+  method void drawTopScore() {
+    var int digits;
+
+    let digits = 1;
+
+    if (topScore > 99) {
+      let digits = 3;
+    }
+
+    if (topScore > 999) {
+      let digits = 4;
+    }
+
+    if (topScore > 9999) {
+      let digits = 5;
+    }
+
+    do Output.moveCursor(3, 58 - digits);
+    do Output.printInt(topScore);
 
     return;
   }
@@ -98,6 +123,20 @@ class HUD {
 
   method int getLevel() {
     return level;
+  }
+
+  method int getScore() {
+    return score;
+  }
+
+  method int getTopScore() {
+    return topScore;
+  }
+
+  method void updateTopScore() {
+    let topScore = score;
+    do drawTopScore();
+    return;
   }
 
   method void setNext(int type) {
@@ -185,6 +224,7 @@ class HUD {
     do Output.printString("TOP SCORE");
     do Output.moveCursor(3, 51);
     do Output.printString("0000000");
+    do drawTopScore();
 
     // Score
     do Output.moveCursor(5, 52);
@@ -209,6 +249,43 @@ class HUD {
     do Output.moveCursor(22, 53);
     do Output.printString("001");
 
+    return;
+  }
+
+  method void drawGameOver() {
+    // Dialog background
+    do Screen.setColor(false);
+    do Screen.drawRectangle(72, 72, 439, 191);
+
+    do Screen.setColor(true);
+    // Black border
+    do Screen.setColor(true);
+    do Screen.drawLine(72, 72, 439, 72);
+    do Screen.drawLine(72, 191, 439, 191);
+    do Screen.drawLine(72, 72, 72, 191);
+    do Screen.drawLine(439, 72, 439, 191);
+
+    do Output.moveCursor(9, 27);
+    do Output.printString("GAME OVER");
+
+    if (score > topScore) {
+      do Output.moveCursor(12, 24);
+      do Output.printString("NEW HIGH SCORE!");
+
+      do Output.moveCursor(15, 15);
+      do Output.printString("PRESS SPACEBAR TO START A NEW GAME");
+    } else {
+      do Output.moveCursor(12, 15);
+      do Output.printString("PRESS SPACEBAR TO START A NEW GAME");
+    }
+
+    return;
+  }
+
+  method void reset() {
+    let score = 0;
+    let lines = 0;
+    let level = 1;
     return;
   }
 }
