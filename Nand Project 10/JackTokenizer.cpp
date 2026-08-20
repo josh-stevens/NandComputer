@@ -16,8 +16,8 @@ const std::unordered_set<std::string> keywords = {
   "let", "do", "if", "else", "while", "return"
 };
 
-JackTokenizer::JackTokenizer(const std::string& filename)
-  : current(-1) {
+JackTokenizer::JackTokenizer(const std::string& sourceFile)
+  : current(-1), filename(sourceFile) {
     std::ifstream file(filename);
 
     if (!file) {
@@ -31,13 +31,30 @@ JackTokenizer::JackTokenizer(const std::string& filename)
     );
 
     size_t position = 0;
+    size_t line = 1;
+    size_t column = 1;
+
+    // line/column handling
+    auto consume = [&]() {
+      if (source[position] == '\n') {
+        line++;
+        column = 1;
+      } else {
+        column++;
+      }
+
+      position++;
+    };
 
     while (position < source.length()) {
       char c = source[position];
 
+      size_t tokenLine = line;
+      size_t tokenColumn = column;
+
       // skip whitespace
       if (std::isspace(static_cast<unsigned char>(c))) {
-        position++;
+        consume();
         continue;
       }
 
@@ -45,56 +62,69 @@ JackTokenizer::JackTokenizer(const std::string& filename)
       if (c == '/' && position + 1 < source.length()) {
         if (source[position + 1] == '/') {
           // line comment
-          position += 2;
+          consume();
+          consume();
 
           while (position < source.length() && source[position] != '\n') {
-            position++;
+            consume();
           }
 
           continue;
         } else if (source[position + 1] == '*') {
           // block comment
-          position += 2;
+          consume();
+          consume();
 
           while (position + 1 < source.length() &&
                 !(source[position] == '*' && source[position + 1] == '/')) {
-            position++;
+            consume();
           }
 
           if (position + 1 >= source.length()) {
             throw std::runtime_error("Unterminated block comment");
           }
 
-          position += 2;
+          consume();
+          consume();
           continue;
         }
       }
 
       // symbols
       if (symbols.contains(c)) {
-        tokens.push_back({TokenType::Symbol, std::string(1, c)});
-        position++;
+        tokens.push_back({
+          TokenType::Symbol,
+          std::string(1, c),
+          tokenLine,
+          tokenColumn
+        });
+        consume();
         continue;
       }
 
       // strings
       if (c == '"') {
-        position++;
+        consume();
 
         std::string value;
 
         while (position < source.length() && source[position] != '"') {
           value += source[position];
-          position++;
+          consume();
         }
 
         if (position >= source.length()) {
           throw std::runtime_error("Unterminated string constant");
         }
 
-        position++;
+        consume();
 
-        tokens.push_back({TokenType::StringConstant, value});
+        tokens.push_back({
+          TokenType::StringConstant,
+          value,
+          tokenLine,
+          tokenColumn
+        });
         continue;
       }
 
@@ -105,10 +135,15 @@ JackTokenizer::JackTokenizer(const std::string& filename)
         while (position < source.length() &&
                std::isdigit(static_cast<unsigned char>(source[position]))) {
           value += source[position];
-          position++;
+          consume();
         }
 
-        tokens.push_back({TokenType::IntConstant, value});
+        tokens.push_back({
+          TokenType::IntConstant,
+          value,
+          tokenLine,
+          tokenColumn
+        });
         continue;
       }
 
@@ -120,13 +155,23 @@ JackTokenizer::JackTokenizer(const std::string& filename)
                (std::isalnum(static_cast<unsigned char>(source[position])) ||
                source[position] == '_')) {
           value += source[position];
-          position++;
+          consume();
         }
 
         if (keywords.contains(value)) {
-          tokens.push_back({TokenType::Keyword, value});
+          tokens.push_back({
+            TokenType::Keyword,
+            value,
+            tokenLine,
+            tokenColumn
+          });
         } else {
-          tokens.push_back({TokenType::Identifier, value});
+          tokens.push_back({
+            TokenType::Identifier,
+            value,
+            tokenLine,
+            tokenColumn
+          });
         }
 
         continue;
@@ -173,4 +218,16 @@ int JackTokenizer::intVal() const {
 
 std::string JackTokenizer::stringVal() const {
   return tokens[current].value;
+}
+
+const std::string& JackTokenizer::getFilename() const {
+  return filename;
+}
+
+size_t JackTokenizer::line() const {
+  return tokens[current].line;
+}
+
+size_t JackTokenizer::column() const {
+  return tokens[current].column;
 }

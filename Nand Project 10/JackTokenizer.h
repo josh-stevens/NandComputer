@@ -15,11 +15,13 @@ enum class TokenType {
 struct Token {
   TokenType type;
   std::string value;
+  size_t line;
+  size_t column;
 };
 
 class JackTokenizer {
   public:
-    explicit JackTokenizer(const std::string& filename);
+    explicit JackTokenizer(const std::string& sourceFile);
 
     bool hasMoreTokens() const;
     void advance();
@@ -30,8 +32,12 @@ class JackTokenizer {
     std::string identifier() const;
     int intVal() const;
     std::string stringVal() const;
+    const std::string& getFilename() const;
+    size_t line() const;
+    size_t column() const;
 
   private:
     std::vector<Token> tokens;
     int current;
+    std::string filename;
 };
