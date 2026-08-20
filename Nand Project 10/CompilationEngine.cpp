@@ -287,6 +287,12 @@ void CompilationEngine::compileDo() {
   // do
   writeToken();
 
+  // subroutineName | className
+  if (tokenizer.tokenType() != TokenType::Identifier) {
+    error("Expected subroutine or class name");
+  }
+  writeToken();
+
   compileSubroutineCall();
 
   // ;
@@ -392,8 +398,10 @@ void CompilationEngine::compileReturn() {
   }
   writeToken();
 
-  // optional expression
-  if (tokenizer.tokenType() == TokenType::Identifier) {
+// optional expression
+  if (tokenizer.tokenType() == TokenType::Identifier ||
+      (tokenizer.tokenType() == TokenType::Keyword &&
+      tokenizer.keyword() == "this")) {
     compileExpression();
   }
 
@@ -507,7 +515,6 @@ void CompilationEngine::compileTerm() {
   } else if (tokenizer.tokenType() == TokenType::Identifier) {
     writeToken();
 
-    // '[' expression ']'
     if (tokenizer.tokenType() == TokenType::Symbol &&
         tokenizer.symbol() == '[') {
       writeToken();
@@ -520,9 +527,8 @@ void CompilationEngine::compileTerm() {
       }
       writeToken();
 
-    // '(...)' or '.method(...)'
     } else if (tokenizer.tokenType() == TokenType::Symbol &&
-               (tokenizer.symbol() == '(' ||
+              (tokenizer.symbol() == '(' ||
                 tokenizer.symbol() == '.')) {
       compileSubroutineCall();
     }
@@ -572,12 +578,6 @@ void CompilationEngine::compileExpressionList() {
 }
 
 void CompilationEngine::compileSubroutineCall() {
-  // subroutineName | className
-  if (tokenizer.tokenType() != TokenType::Identifier) {
-    error("Expected subroutine or class name");
-  }
-  writeToken();
-
   // optional .subroutineName
   if (tokenizer.tokenType() == TokenType::Symbol &&
       tokenizer.symbol() == '.') {
@@ -596,7 +596,6 @@ void CompilationEngine::compileSubroutineCall() {
   }
   writeToken();
 
-  // expressionList
   compileExpressionList();
 
   // )
