@@ -6,7 +6,7 @@
 #include <string>
 #include <filesystem>
 
-void analyzeFile(const std::filesystem::path& inputPath) {
+void compileFile(const std::filesystem::path& inputPath) {
   std::filesystem::path outputPath =
     inputPath.parent_path() /
     (inputPath.stem().string() + ".xml");
@@ -34,13 +34,13 @@ int main(int argc, char* argv[]) {
   std::filesystem::path inputPath(inputFilename);
   
   if (std::filesystem::is_regular_file(inputPath)) {
-    analyzeFile(inputPath);
+    compileFile(inputPath);
   } else if (std::filesystem::is_directory(inputPath)) {
     for (const auto& entry :
          std::filesystem::directory_iterator(inputPath)) {
       if (entry.is_regular_file() &&
           entry.path().extension() == ".jack") {
-        analyzeFile(entry.path());
+        compileFile(entry.path());
       }
     }
   } else {
